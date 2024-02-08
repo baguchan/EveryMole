@@ -2,7 +2,7 @@
   "required": true,
   "package": "baguchan.every_mole.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "tact.refmap.json",
+  "refmap": "every_mole.refmap.json",
   "mixins": [
     "MobMixin"
   ],
