@@ -1,9 +1,11 @@
 package baguchan.every_mole.utils;
 
 import baguchan.every_mole.registry.Sacrifice;
+import net.minecraft.advancements.critereon.NbtPredicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -24,4 +26,14 @@ public class ConvertUtils {
         }
         return Minecraft.getInstance().getConnection().registryAccess();
     }
+
+    public static CompoundTag getData(Entity entity) {
+        return NbtPredicate.getEntityTagToCompare(entity);
+    }
+
+    public static void mergeData(Entity entity, CompoundTag compoundTag) {
+        CompoundTag compoundTag1 = NbtPredicate.getEntityTagToCompare(entity).copy().merge(compoundTag);
+        entity.load(compoundTag1);
+    }
+
 }

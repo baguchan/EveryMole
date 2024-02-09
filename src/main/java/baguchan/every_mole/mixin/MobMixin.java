@@ -4,6 +4,8 @@ import baguchan.every_mole.utils.ConvertUtils;
 import com.github.alexmodguy.alexscaves.server.entity.living.UnderzealotEntity;
 import com.github.alexmodguy.alexscaves.server.entity.util.UnderzealotSacrifice;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
+import net.minecraft.advancements.critereon.NbtPredicate;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
@@ -107,6 +109,9 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
                     this.stopRiding();
                     t.startRiding(entity, true);
                 }
+
+                CompoundTag compoundTag1 = NbtPredicate.getEntityTagToCompare(this).copy();
+                t.load(compoundTag1);
 
                 this.discard();
                 return t;
