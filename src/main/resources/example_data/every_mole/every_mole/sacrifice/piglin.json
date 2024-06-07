@@ -1,0 +1,6 @@
+{
+  "target": "minecraft:zombified_piglin",
+  "target_nbt": "{IsBaby:1b}",
+  "convert_nbt": "{IsImmuneToZombification:1b}",
+  "convert": "minecraft:piglin"
+}

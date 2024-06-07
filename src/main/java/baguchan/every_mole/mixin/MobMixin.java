@@ -1,5 +1,6 @@
 package baguchan.every_mole.mixin;
 
+import baguchan.every_mole.registry.Sacrifice;
 import baguchan.every_mole.utils.ConvertUtils;
 import com.github.alexmodguy.alexscaves.server.entity.living.UnderzealotEntity;
 import com.github.alexmodguy.alexscaves.server.entity.util.UnderzealotSacrifice;
@@ -29,9 +30,11 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
 
     @Shadow public abstract void setPersistenceRequired();
 
+    @Shadow
+    public abstract void addAdditionalSaveData(CompoundTag p_21484_);
+
     private boolean isBeingSacrificed = false;
     private int sacrificeTime;
-
     protected MobMixin(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
         super(p_20966_, p_20967_);
     }
@@ -53,7 +56,7 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
                 }
 
                 this.stopRiding();
-                Entity convert = this.convertToMonster(ConvertUtils.getSacrifice(this.getType()).getConvertEntityType(), true);
+                Entity convert = this.convertToMonster(ConvertUtils.getSacrifice(this.getType()), true);
                 this.playSound((SoundEvent) ACSoundRegistry.DARK_CLOUD_DISAPPEAR.get(), 8.0F, 1.0F);
                 if (convert instanceof Mob convertLiving) {
                     ForgeEventFactory.onLivingConvert(this, convertLiving);
@@ -65,11 +68,11 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
     }
 
     @Nullable
-    private Entity convertToMonster(EntityType<?> p_21407_, boolean p_21408_) {
+    private Entity convertToMonster(Sacrifice sacrifice, boolean p_21408_) {
         if (this.isRemoved()) {
             return null;
         } else {
-            Entity t = p_21407_.create(this.level());
+            Entity t = sacrifice.getConvertEntityType().create(this.level());
             if (t == null) {
                 return null;
             } else {
@@ -112,6 +115,9 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
 
                 CompoundTag compoundTag1 = NbtPredicate.getEntityTagToCompare(this).copy();
                 t.load(compoundTag1);
+                if (sacrifice.convertTag().isPresent()) {
+                    t.load(sacrifice.convertTag().get());
+                }
 
                 this.discard();
                 return t;
@@ -127,6 +133,15 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
 
     @Override
     public boolean isValidSacrifice(int i) {
-        return this.getType() != EntityType.PLAYER && ConvertUtils.getSacrifice(this.getType()) != null;
+        if (this.getType() != EntityType.PLAYER) {
+            Sacrifice sacrifice = ConvertUtils.getSacrifice(this.getType());
+            if (sacrifice != null && sacrifice.targetTag().isEmpty()) {
+                return true;
+            } else if (sacrifice != null) {
+                NbtPredicate nbtPredicate = new NbtPredicate(sacrifice.targetTag().get().copy());
+                return nbtPredicate.matches(this);
+            }
+        }
+        return false;
     }
 }
