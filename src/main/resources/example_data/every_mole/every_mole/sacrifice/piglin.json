@@ -1,6 +1,10 @@
 {
-  "target": "minecraft:zombified_piglin",
-  "target_nbt": "{IsBaby:1b}",
-  "convert_nbt": "{IsImmuneToZombification:1b}",
-  "convert": "minecraft:piglin"
+  "target": "minecraft:piglin",
+  "target_nbt": {
+    "IsBaby": true
+  },
+  "convert_nbt": {
+    "Age": -24000
+  },
+  "convert": "minecraft:pig"
 }
