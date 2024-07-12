@@ -10,9 +10,9 @@ import net.minecraftforge.registries.RegistryBuilder;
 import java.util.function.Supplier;
 
 public class ModSacrifices {
-    public static final DeferredRegister<Sacrifice> ALCHEMY_MATERIAL = DeferredRegister.create(Sacrifice.REGISTRY_KEY,
+    public static final DeferredRegister<Sacrifice> SACRIFICE_DEFERRED_REGISTER = DeferredRegister.create(Sacrifice.REGISTRY_KEY,
             EveryMole.MODID);
-    public static final Supplier<IForgeRegistry<Sacrifice>> CONVERT_REGISTRY = ALCHEMY_MATERIAL.makeRegistry(RegistryBuilder::new);
+    public static final Supplier<IForgeRegistry<Sacrifice>> CONVERT_REGISTRY = SACRIFICE_DEFERRED_REGISTER.makeRegistry(RegistryBuilder::new);
     public static ResourceKey<Sacrifice> key(ResourceLocation name) {
         return ResourceKey.create(Sacrifice.REGISTRY_KEY, name);
     }

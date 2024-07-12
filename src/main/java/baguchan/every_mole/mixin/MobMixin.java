@@ -118,6 +118,9 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
                 if (sacrifice.convertTag().isPresent()) {
                     t.load(sacrifice.convertTag().get());
                 }
+                if (t instanceof Mob mob) {
+                    mob.heal(mob.getMaxHealth());
+                }
 
                 this.discard();
                 return t;
@@ -135,11 +138,11 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
     public boolean isValidSacrifice(int i) {
         if (this.getType() != EntityType.PLAYER) {
             Sacrifice sacrifice = ConvertUtils.getSacrifice(this.getType());
-            if (sacrifice != null && sacrifice.targetTag().isEmpty()) {
+            if (sacrifice != null && sacrifice.targetTag().isPresent()) {
+                CompoundTag compoundTag1 = NbtPredicate.getEntityTagToCompare(this).copy();
+                return ConvertUtils.findTagMatcher(compoundTag1, sacrifice.targetTag().get());
+            } else if (sacrifice != null && sacrifice.targetTag().isEmpty()) {
                 return true;
-            } else if (sacrifice != null) {
-                NbtPredicate nbtPredicate = new NbtPredicate(sacrifice.targetTag().get().copy());
-                return nbtPredicate.matches(this);
             }
         }
         return false;

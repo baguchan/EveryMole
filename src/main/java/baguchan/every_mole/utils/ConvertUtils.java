@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ConvertUtils {
     @Nullable
     public static Sacrifice getSacrifice(EntityType<?> entityType) {
-        Optional<Sacrifice> sacrifice = registryAccess().registryOrThrow(Sacrifice.REGISTRY_KEY).stream().filter(sacrifice2 -> entityType == sacrifice2.getEntityType()).findFirst();
+        Optional<Sacrifice> sacrifice = registryAccess().registryOrThrow(Sacrifice.REGISTRY_KEY).stream().filter(sacrifice2 -> entityType == sacrifice2.getEntityType()).limit(1).findFirst();
         return sacrifice.orElse(null);
     }
 
@@ -34,6 +34,13 @@ public class ConvertUtils {
     public static void mergeData(Entity entity, CompoundTag compoundTag) {
         CompoundTag compoundTag1 = NbtPredicate.getEntityTagToCompare(entity).copy().merge(compoundTag);
         entity.load(compoundTag1);
+    }
+
+    public static boolean findTagMatcher(
+            CompoundTag tag,
+            CompoundTag target
+    ) {
+        return tag.getAsString().contains(target.getAsString().replace("{", "").replace("}", "").replace("\\", ""));
     }
 
 }
