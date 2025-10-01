@@ -56,11 +56,14 @@ public abstract class MobMixin extends LivingEntity implements UnderzealotSacrif
                 }
 
                 this.stopRiding();
-                Entity convert = this.convertToMonster(ConvertUtils.getSacrifice(this.getType()), true);
-                this.playSound((SoundEvent) ACSoundRegistry.DARK_CLOUD_DISAPPEAR.get(), 8.0F, 1.0F);
-                if (convert instanceof Mob convertLiving) {
-                    ForgeEventFactory.onLivingConvert(this, convertLiving);
-                    convert.stopRiding();
+                Sacrifice sacrifice = ConvertUtils.getSacrifice(this.getType());
+                if (sacrifice != null) {
+                    Entity convert = this.convertToMonster(sacrifice, true);
+                    this.playSound((SoundEvent) ACSoundRegistry.DARK_CLOUD_DISAPPEAR.get(), 8.0F, 1.0F);
+                    if (convert instanceof Mob convertLiving) {
+                        ForgeEventFactory.onLivingConvert(this, convertLiving);
+                        convert.stopRiding();
+                    }
                 }
             }
         }
